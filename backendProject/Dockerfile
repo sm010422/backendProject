@@ -1,5 +1,5 @@
 # 사용할 베이스 이미지 명시 (공식 이미지 권장)
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-jdk-slim
 
 # 작업 디렉토리 생성 및 설정
 WORKDIR /app

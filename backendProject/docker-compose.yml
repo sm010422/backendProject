@@ -1,7 +1,8 @@
-version: "3.8"
-
 services:
-  backend1: # 서비스 이름은 컨테이너간 통신하기 위한 이름
+  backend1:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: backend
     container_name: backend1
     environment:

@@ -1,4 +1,4 @@
-package com.example.backendproject.user.controller;
+package org.example.backendproject.user.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;

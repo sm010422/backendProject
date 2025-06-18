@@ -1,5 +1,7 @@
 package org.example.backendproject.purewebsocket.dto;
 
+import lombok.Getter;
+
 public class ChatMessage {
   private String sender;
   private String content;

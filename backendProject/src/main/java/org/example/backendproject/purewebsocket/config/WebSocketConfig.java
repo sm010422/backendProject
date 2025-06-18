@@ -14,5 +14,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
     registry.addHandler(new ChatWebSocketHandler(), "/ws-chat")
         .setAllowedOrigins("*"); // 모든 출처 허용
+    // ws-chat 엔드포인트로 요청을 보낼 수 있는지 결정하는 보안 정책 설정 (CORS)
+    // * <- 모든 도메인에 접근 가능
   }
 }

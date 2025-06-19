@@ -1,29 +1,28 @@
 package org.example.backendproject.purewebsocket.room.controller;
 
-import java.util.List;
-
-import org.example.backendproject.purewebsocket.room.service.RoomService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backendproject.purewebsocket.room.entity.ChatRoom;
+import org.example.backendproject.purewebsocket.room.service.RoomService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/rooms")
+public class RoomController {
 
-pubilc class RoomController {
+    private final RoomService roomService;
 
-  private final RoomService roomService;
-
-  @GetMapping
-  public List<ChatRoom> getAllRooms() {
-    return roomService.findAllRooms();
-  }
-
-  @GetMapping("/{roomId}")
-  public ChatRoom(@PathVariable String roomId) {
-        return roomService.createRoom(roomId)
+    @GetMapping
+    public List<ChatRoom> getAllRoom(){
+        return roomService.findAllRooms();
     }
+
+    @PostMapping("/{roomId}")
+    public ChatRoom createRoom(@PathVariable String roomId){
+        return roomService.createRoom(roomId);
+    }
+
 }

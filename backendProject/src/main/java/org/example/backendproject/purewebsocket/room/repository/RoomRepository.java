@@ -1,20 +1,12 @@
 package org.example.backendproject.purewebsocket.room.repository;
 
-import java.util.List;
-import java.util.Optional;
 
 import org.example.backendproject.purewebsocket.room.entity.ChatRoom;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoomRepository extends JpaRepository<ChatRoom, Long> {
+import java.util.Optional;
 
-  private final RoomRepository roomRepository;
+public interface RoomRepository extends JpaRepository<ChatRoom,Long> {
 
-  // 채팅방 ID로 채팅방을 찾는 메소드
-  Optional<ChatRoom> findByRoomId(String roomId);
-
-  // 채팅방 이름으로 채팅방을 찾는 메소드
-  Optional<ChatRoom> findByRoomId(String name);
-
-  // 모든 채팅방을 조회하는 메소드
-  List<ChatRoom> findAll();
+    Optional<ChatRoom> findByRoomId(String roomId);
 }

@@ -1,4 +1,5 @@
-package org.example.backendproject.purewebsocket.dto;
+package org.example.backendproject.stompwebsocket.dto;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +12,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessage {
 
-    private String roomId;
     private String message;
     private String from;
 
+    private String to; //귓속말을 받을 사람
+    private String roomId; //방 id
 }

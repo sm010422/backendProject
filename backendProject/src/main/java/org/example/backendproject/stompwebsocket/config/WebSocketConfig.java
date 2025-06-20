@@ -17,14 +17,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         //Prefix <- 메세지의 목적지를 구분하기 위한 접두어
 
-
         /** 구독용 Prefix  **/
 
         // /topic  일반 채팅을 받을 접두어
         // /queue  귓속말을 받을 접두어
         /** 서버가 보내는 메시지를 클라이언트가 구독할 때 사용하는 경로 **/
         registry.enableSimpleBroker("/topic","/queue"); //구독용 경로
-
 
 
 
@@ -37,8 +35,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // /user 특정 사용자에게 메세지를 보낼 접두어
         /** 서버가 특정 사용자에게 메시지를 보낼 때, 클라이언트가 구독할 경로 접두어 **/
         registry.setUserDestinationPrefix("/user"); // 서버 -> 특정 사용자
-
-
 
     }
 

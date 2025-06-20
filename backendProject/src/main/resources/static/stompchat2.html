@@ -145,7 +145,7 @@
 
 
             //일반채팅
-            stompClient.subscribe(`/topic/${roomId}`, function (chat) {
+            stompClient.subscribe(`/topic/room.${roomId}`, function (chat) {
                 const message = JSON.parse(chat.body);
                 showMessage(message.from, message.message);
             });

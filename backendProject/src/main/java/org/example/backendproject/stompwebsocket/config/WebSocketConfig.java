@@ -43,5 +43,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws-chat")
                 .setHandshakeHandler(new CustomHandshakeHandler())
                 .setAllowedOriginPatterns("*");
+
+        registry.addEndpoint("/ws-gpt")
+                .setAllowedOriginPatterns("*");
+
     }
 }

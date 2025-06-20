@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.backendproject.stompwebsocket.dto.ChatMessage;
+import org.example.backendproject.stompwebsocket.gpt.GPTService;
 import org.example.backendproject.stompwebsocket.redis.RedisPublisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -26,13 +27,21 @@ public class ChatController {
     private final RedisPublisher redisPublisher;
     private final ObjectMapper objectMapper  = new ObjectMapper();
 
+    private final GPTService  gptService;
+
 
     //단일 브로드캐스트 (방을 동적으로 생성이 안됨)
-//    @MessageMapping("/chat.sendMessage")
-//    @SendTo("/topic/public")
-//    public ChatMessage sendMessage(ChatMessage message){
-//        return message;
-//    }
+    @MessageMapping("/gpt")
+    public void sendMessageGPT(ChatMessage message) throws Exception {
+
+        String getResponse = gptService.gptMessage(message.getMessage());
+
+        ChatMessage chatMessage = new ChatMessage("난 GPT",getResponse);
+
+        template.convertAndSend("/topic/gpt",chatMessage);
+
+    }
+
 
 
     @MessageMapping("/chat.sendMessage")

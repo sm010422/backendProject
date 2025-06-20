@@ -18,8 +18,8 @@ public class ChatMessage {
     private String to; //귓속말을 받을 사람
     private String roomId; //방 id
 
-    public ChatMessage(String message, String from) {
-        this.message = message;
+    public ChatMessage(String from, String message) {
         this.from = from;
+        this.message = message;
     }
 }

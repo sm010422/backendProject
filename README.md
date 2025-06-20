@@ -3,3 +3,6 @@
 - nginx
 - spring
 - docker
+- websocket
+- redis
+- chatgpt

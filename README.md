@@ -6,3 +6,4 @@
 - websocket
 - redis
 - chatgpt
+- jenkins

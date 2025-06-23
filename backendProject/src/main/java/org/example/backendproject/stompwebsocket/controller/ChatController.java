@@ -30,20 +30,29 @@ public class ChatController {
     private final GPTService  gptService;
 
 
-    //단일 브로드캐스트 (방을 동적으로 생성이 안됨)
+    /** 클라이언트가 서버로 보낼 앤드포인트 **/
+    //gpt ai 챗봇 앤드포인트
     @MessageMapping("/gpt")
     public void sendMessageGPT(ChatMessage message) throws Exception {
 
+        template.convertAndSend("/topic/gpt",message);
+        //내가 보낸 메세지 내 채팅방에 반환
+
+
         String getResponse = gptService.gptMessage(message.getMessage());
+                                //GPT API 요청을 위해 내가 보낸 메세지로 HTTP 요청 보냄
+
 
         ChatMessage chatMessage = new ChatMessage("난 GPT",getResponse);
-
         template.convertAndSend("/topic/gpt",chatMessage);
+        //GPT API 응답을 내 채팅방에 반환
 
     }
 
 
 
+    /** 클라이언트가 서버로 보낼 앤드포인트 **/
+    // 단체 체팅방 앤드포인트
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(ChatMessage message) throws JsonProcessingException {
 

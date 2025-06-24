@@ -10,8 +10,7 @@ services:
       - ./volumes/jenkins:/var/jenkins_home
       - ./kubeconfig:/root/.kube
       - /var/run/docker.sock:/var/run/docker.sock
-      # - C:\Users\dmstl\Intellij-Workspace\backend5/backendProject:/var/jenkins_home/workspace/backend5/backendProject  # 프로젝트 연결  (은시기 노트북)
-      - /Users/parksangmin/coding/backend5/backendProject:/var/jenkins_home/workspace/backend5/backendProject
+      - C:\Users\dmstl\Intellij-Workspace\backend5/backendProject:/var/jenkins_home/workspace/backend5/backendProject  # 프로젝트 연결  (은시기 노트북)
     #  - A:\backend5/backendProject:/var/jenkins_home/workspace/backend5/backendProject  # 프로젝트 연결  (은시기 데스크탑 )
     restart: unless-stopped
     networks:
@@ -20,4 +19,3 @@ services:
 networks:
   prod_server:
     external: true
-

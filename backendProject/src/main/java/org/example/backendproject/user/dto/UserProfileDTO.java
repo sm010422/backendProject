@@ -1,19 +1,19 @@
 package org.example.backendproject.user.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class UserProfileDTO {
 
-    private Long id;
-    private String userid;
-
-    private UserProfileDTO profile;  // 추가
+    private String username;
+    private String email;
+    private String phone;
+    private String address;
 }

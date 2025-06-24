@@ -22,7 +22,7 @@ public class AuthController {
 
     /** 회원가입 **/
     @PostMapping("/signUp")
-    public ResponseEntity<String> singUp(@RequestBody SignUpRequestDTO signUpRequestDTO){
+    public ResponseEntity<String> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO){
         try {
             authService.signUp(signUpRequestDTO);
             return ResponseEntity.ok("회원가입 성공");
@@ -36,22 +36,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
         try {
-
-            authService.login(loginRequestDTO);
             UserDTO loginUser = authService.login(loginRequestDTO);
-
             System.out.println("로그인 성공 = "+new ObjectMapper().writeValueAsString(loginUser));
-
             return ResponseEntity.ok(loginUser);
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
     }
-
-
-
 
 
 }

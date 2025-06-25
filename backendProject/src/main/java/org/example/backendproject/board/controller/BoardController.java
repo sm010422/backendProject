@@ -24,11 +24,12 @@ public class BoardController {
 
     /** 글 작성 **/
     @PostMapping
-    public ResponseEntity<BoardDTO> createBoard(@RequestBody BoardDTO boardDTO) throws JsonProcessingException {
-        System.out.println("boardDTO 값 "+new ObjectMapper().writeValueAsString(boardDTO));
+    public ResponseEntity<BoardDTO> createBoard(
+            @RequestBody BoardDTO boardDTO)  {
         BoardDTO created = boardService.createBoard(boardDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
+
 
     /** 게시글 상세 조회 **/
     @GetMapping("/{id}")

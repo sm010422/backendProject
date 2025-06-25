@@ -18,6 +18,7 @@ public class JwtKey {
     @Bean
     public SecretKey secretKey(){
         byte[] keyBytes = secretKey.getBytes(); //설정파일에서 불러온 키 값을 바이트로 배열로 변환
-        return new SecretKeySpec(keyBytes, "HmacSHA256"); //바이트 배열을 HmacSHA256용 Security 객체로 매핑
+        return new SecretKeySpec(keyBytes, "HmacSHA512"); //바이트 배열을 HmacSHA256용 Security 객체로 매핑
     }
+
 }

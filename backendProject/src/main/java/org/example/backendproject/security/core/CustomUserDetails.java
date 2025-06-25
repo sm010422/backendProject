@@ -8,16 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
     // UserDetails <- 사용자 정보를 담는 인터페이스
     //로그인한 사용자의 정보를 담아두는 역할
-
     private final User user;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

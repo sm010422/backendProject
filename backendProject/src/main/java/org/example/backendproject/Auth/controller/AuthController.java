@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.example.backendproject.Auth.dto.LoginRequestDTO;
 import org.example.backendproject.Auth.dto.LoginResponseDTO;
 import org.example.backendproject.Auth.dto.SignUpRequestDTO;
@@ -43,34 +42,36 @@ public class AuthController {
         return ResponseEntity.ok(loginResponseDTO);
     }
 
+
+    /** 토큰갱신 API */
+    //refresh HTTP 요청 헤더에서 토큰을 추출하고 그 토큰으로 리프레시 토큰을 발급
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestHeader(value = "Authorization", required = false)
-                                          String authorizatioinHeader, HttpServletRequest request){
+                                          String authorizationHeader, HttpServletRequest request) {
         String refreshToken = null;
-
-        if(request.getCookies() != null){
-            for (Cookie cookie : request.getCookies()){
-                if("refreshToken".equals(cookie.getName())){
+        // 1. 쿠키에서 찾기
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
                     refreshToken = cookie.getValue();
                 }
             }
         }
-
-        if(refreshToken  == null && authorizatioinHeader != null && authorizatioinHeader.startsWith("Bearer ")){
-            refreshToken = authorizatioinHeader.replace("Bear ","").trim();
+        // 2. Authorization 헤더 찾기
+        if (refreshToken == null && authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            refreshToken = authorizationHeader.replace("Bearer ", "").trim();
         }
-        if(refreshToken == null || refreshToken.isEmpty()){
+        if (refreshToken == null || refreshToken.isEmpty()) {
             throw new IllegalArgumentException("리프레시 토큰이 없습니다.");
         }
         String newAccessToken = authService.refreshToken(refreshToken);
-
+        //json 객체로 변환하여 front에 내려주기
         Map<String, String> res = new HashMap<>();
-        res.put("accassToken", newAccessToken);
+        res.put("accessToken", newAccessToken);
         res.put("refreshToken", refreshToken);
 
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
-
 
 
 }

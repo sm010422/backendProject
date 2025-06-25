@@ -27,13 +27,13 @@ public class UserController {
     private final UserService userService;
 
     /** 내 정보 보기 **/
-    @GetMapping("/me/{id}")
+    @GetMapping("/me")
     public ResponseEntity<UserDTO> getMyInfo(@PathVariable("id") Long userId) {
         return ResponseEntity.ok(userService.getMyInfo(userId));
     }
 
     /** 유저 정보 수정 **/
-    @PutMapping("/me/{id}")
+    @PutMapping("/me")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long userId, @RequestBody UserDTO dto)  {
         UserDTO updated = userService.updateUser(userId, dto);
         return ResponseEntity.ok(updated);

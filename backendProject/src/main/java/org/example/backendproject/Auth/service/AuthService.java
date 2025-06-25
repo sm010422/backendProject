@@ -104,5 +104,28 @@ public class AuthService {
 
     }
 
+    @Transactional
+    public String refreshToken(String refreshToken){
+
+        if(jwtTokenProvider.validateToken(refreshToken)){
+
+            Auth auth = authRepository.findByRefreshToken(refreshToken).orElseThrow(
+                    () -> new IllegalArgumentException("해당 REFRESH_TOKEN 을 찾을 수 없습니다. \n REFRESH_TOKEN = " + refreshToken)
+            );
+
+            String newAccessToken = jwtTokenProvider.generateToken(
+                    new UsernamePasswordAuthenticationToken(
+                            new CustomUserDetails(auth.getUser()), auth.getUser().getPassword()),jwtAccessTokenExpirationTime);
+
+            auth.updateAccessToken(newAccessToken);
+            authRepository.save(auth);
+
+            return newAccessToken;
+
+        }
+        else {
+            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
+        }
+    }
 
 }

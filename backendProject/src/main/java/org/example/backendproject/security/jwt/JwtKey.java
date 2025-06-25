@@ -13,6 +13,7 @@ public class JwtKey {
   @Value("&{jwt.secretKey}")
   private String secretKey;
 
+  // 서명키를 만들어서 반환하는 메서드
   @Bean
   private SecretKey secretKey() {
     byte[] keyBytes = secretKey.getBytes();

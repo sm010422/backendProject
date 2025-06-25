@@ -1,8 +1,8 @@
 package org.example.backendproject.Auth.dto;
 
+
 import lombok.*;
 import org.example.backendproject.Auth.entity.Auth;
-import org.springframework.stereotype.Service;
 
 @Getter
 @Setter
@@ -16,11 +16,11 @@ public class LoginResponseDTO {
     private Long userId;
 
     @Builder
-    public LoginResponseDTO(Auth auth){
+    public LoginResponseDTO(Auth auth) {
         this.tokenType = auth.getTokenType();
         this.accessToken = auth.getAccessToken();
+        this.refreshToken = auth.getRefreshToken();
         this.userId = auth.getId();
-        this. refreshToken = auth.getRefreshToken();
     }
 
 }

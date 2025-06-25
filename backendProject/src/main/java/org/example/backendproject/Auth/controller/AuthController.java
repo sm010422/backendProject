@@ -35,10 +35,13 @@ public class AuthController {
 
     /** 로그인 **/
     @PostMapping("/loginSecurity")
-    public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO){
         LoginResponseDTO loginResponseDTO = authService.login(loginRequestDTO);
         return ResponseEntity.ok(loginResponseDTO);
     }
+
+
+
 
 
 }

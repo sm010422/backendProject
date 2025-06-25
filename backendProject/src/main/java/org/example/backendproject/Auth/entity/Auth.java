@@ -33,6 +33,7 @@ public class Auth {
     @JoinColumn(name = "user_id") //auth.getUser()에 실제로 접근할 때 User 쿼리 발생!
     private User user;
 
+
     public Auth(User user, String refreshToken, String accessToken, String tokenType) {
         this.user = user;
         this.refreshToken = refreshToken;
@@ -41,7 +42,7 @@ public class Auth {
     }
 
     // updateAccessToken 메서드 추가
-// 토큰값을 업데이트 해주는 메서드
+    //토큰값을 업데이트 해주는 메서드
     public void updateAccessToken(String newAccessToken) {
         this.accessToken = newAccessToken;
     }
@@ -50,5 +51,6 @@ public class Auth {
     public void updateRefreshToken(String newRefreshToken) {
         this.refreshToken = newRefreshToken;
     }
+
 
 }

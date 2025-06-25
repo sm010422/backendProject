@@ -80,34 +80,27 @@ public class AuthService {
         //엑세스 토큰
         String accessToken = jwtTokenProvider.generateToken(
                 new UsernamePasswordAuthenticationToken(new CustomUserDetails(user)
-                        ,user.getPassword()),jwtAccessTokenExpirationTime);
+                ,user.getPassword()),jwtAccessTokenExpirationTime);
         //리프레시 토큰
         String refreshToken = jwtTokenProvider.generateToken(
                 new UsernamePasswordAuthenticationToken(new CustomUserDetails(user)
                         ,user.getPassword()),jwtRefreshTokenExpirationTime);
 
 
-        //현재 로그인 한 사람이 DB에 있는지 확인
+        //현재 로그인 한 사람이 DB에 있는지 확인하고 있으면 토큰을 DB에 저장하고 로그인 처리
         if (authRepository.existsByUser(user)){
             Auth auth = user.getAuth();
-
+            auth.setRefreshToken(refreshToken);
+            auth.setAccessToken(accessToken);
+            authRepository.save(auth);
+            return new LoginResponseDTO(auth);
         }
 
 
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setUserid(user.getUserid());
-
-
-        //유저 프로필
-        UserProfileDTO profileDTO = new UserProfileDTO();
-        profileDTO.setUsername(user.getUserProfile().getUsername());
-        profileDTO.setEmail(user.getUserProfile().getEmail());
-        profileDTO.setPhone(user.getUserProfile().getPhone());
-        profileDTO.setAddress(user.getUserProfile().getAddress());
-
-        return userDTO;
+        //위에서 DB에 사용자 정보가 없으면 새로 생성해서 로그인 처리
+        Auth auth = new Auth(user,refreshToken,accessToken,"Bearer");
+        authRepository.save(auth);
+        return new LoginResponseDTO(auth);
 
     }
 

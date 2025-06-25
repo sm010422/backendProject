@@ -41,7 +41,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
+
+      String url = request.getRequestURI().toString();
+      String method = request.getMethod();
+
+      System.out.println("현재 들어온 HTTP 요청 = "  + url);
+
     }
+    /*
+      CharacterEncodingFilter: 문자 인코딩 처리
+      CorsFilter: CORS 정책 처리
+      CsrfFilter: CSRF 보안 처리
+      JWTTokenFilter: JWT 토큰 처리(핵심)
+      SecurityContextFilter: 인증/인가 정보 저장
+      ExceptionFilter: 예외 처리
+
+     */
+    filterChain.doFilter(request,response);
 
   }
 

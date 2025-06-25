@@ -3,6 +3,7 @@ package org.example.backendproject.Auth.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.backendproject.Auth.dto.LoginRequestDTO;
+import org.example.backendproject.Auth.dto.LoginResponseDTO;
 import org.example.backendproject.Auth.dto.SignUpRequestDTO;
 import org.example.backendproject.Auth.service.AuthService;
 import org.example.backendproject.user.dto.UserDTO;
@@ -33,16 +34,10 @@ public class AuthController {
     }
 
     /** 로그인 **/
-    @PostMapping("/login")
+    @PostMapping("/loginSecurity")
     public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
-        try {
-            UserDTO loginUser = authService.login(loginRequestDTO);
-            System.out.println("로그인 성공 = "+new ObjectMapper().writeValueAsString(loginUser));
-            return ResponseEntity.ok(loginUser);
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        LoginResponseDTO loginResponseDTO = authService.login(loginRequestDTO);
+        return ResponseEntity.ok(loginResponseDTO);
     }
 
 

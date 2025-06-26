@@ -35,10 +35,11 @@ public class SecurityConfig {
                         .requestMatchers("/","/index.html", "/*.html", "/favicon.ico",
                                 "/css/**", "/fetchWithAuth.js","/js/**", "/images/**",
                                 "/.well-known/**").permitAll() // 정적 리소스 누구나 접근
-                        .requestMatchers("/boards/**",  "/boards","/api/auth/**").permitAll()
+
+                        .requestMatchers("/api/auth/**").permitAll()
 
                         //인증이 필요한 경로
-                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers("/api/**","/boards","/boards/**","/api/comments","/api/comments/**").authenticated()
 
 
                 )
@@ -49,7 +50,7 @@ public class SecurityConfig {
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
                         })
                         //인증은 되었지만 권한이 없을 때
-                        .authenticationEntryPoint((request, response, authException) -> {
+                        .accessDeniedHandler((request, response, authException) -> {
                             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
                         })
                 )

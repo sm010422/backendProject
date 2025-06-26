@@ -7,33 +7,45 @@ import org.example.backendproject.board.dto.BoardDTO;
 import org.example.backendproject.board.entity.Board;
 import org.example.backendproject.board.service.BoardService;
 
+import org.example.backendproject.security.core.CustomUserDetails;
+import org.example.backendproject.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/boards")
+@RequestMapping("/api/boards")
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
+    private final UserRepository  userRepository;
 
 
     /** 글 작성 **/
     @PostMapping
     public ResponseEntity<BoardDTO> createBoard(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestBody BoardDTO boardDTO)  {
+        Long id = customUserDetails.getId();
+        boardDTO.setUser_id(id);
         BoardDTO created = boardService.createBoard(boardDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-
     /** 게시글 상세 조회 **/
     @GetMapping("/{id}")
     public ResponseEntity<BoardDTO> getBoardDetail(@PathVariable Long id) {
+//        Long userid = customUserDetails.getId();
+//        if (userRepository.findById(userid).isEmpty()) {  //    <- service 단으로
+//            throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");
+//        }
         return ResponseEntity.ok(boardService.getBoardDetail(id));
     }
 
@@ -74,7 +86,7 @@ public class BoardController {
     /** 페이징 적용 **/
     //페이징 적용 전체 목록보기
     //기본값은 0페이지 첫페이지입니다 페이지랑 10개 데이터를 불러옴
-    @GetMapping
+    @GetMapping("/all")
     public Page<BoardDTO> getBoards(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size

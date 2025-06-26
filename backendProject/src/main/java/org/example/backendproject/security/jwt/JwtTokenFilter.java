@@ -55,7 +55,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String accessToken = extractTokenFromRequest(request); //요청 헤더에서 토큰 추출
+
+        String accessToken = getTokenFromRequest(request); //요청 헤더에서 토큰 추출
 
         if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
             UsernamePasswordAuthenticationToken authenticationToken =getAuthentication(accessToken);
@@ -74,6 +75,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         else {
             System.out.println("❌ 토큰 없음 또는 유효하지 않음: " + accessToken);
         }
+
+
+
         /**
 
          CharacterEncodingFilter: 문자 인코딩 처리
@@ -100,6 +104,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
 
+
+
     //http 요청에서 사용자 인증 정보를 담는 객체
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         //JWT 토큰에서 사용자 id 추출
@@ -114,7 +120,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
 
-  // HTTP 요청 헤더에서 토큰을 추출하는 메서드
+
+
+
+    /// ////
+
+
+    // HTTP 요청 헤더에서 토큰을 추출하는 메서드
     private String extractTokenFromRequest(HttpServletRequest request) {
         // 1. 쿠키에서 accessToken 확인
         String cookieToken = extractTokenFromCookie(request);
@@ -135,7 +147,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     // 쿠키에서 accessToken을 추출하는 메서드
     private String extractTokenFromCookie(HttpServletRequest request) {
         jakarta.servlet.http.Cookie[] cookies = request.getCookies();
-        
+
         if (cookies != null) {
             for (jakarta.servlet.http.Cookie cookie : cookies) {
                 if ("accessToken".equals(cookie.getName())) {
@@ -143,13 +155,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 }
             }
         }
-        
+
         return null;
     }
-
-
-
-
 
 
 

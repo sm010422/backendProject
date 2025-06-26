@@ -18,7 +18,7 @@ public class OAuth2LogoutSuccessHandler implements LogoutSuccessHandler {
     // 로그아웃을 커스텀으로 구현하고 싶을 때 사용하는 인터페이스
 
     // 카카오 REST API 키 (환경변수나 properties에서 가져오세요)
-    private final String kakaoClientId = "e481ea931646615d3f8b954ea82d0e48";
+    private final String kakaoClientId = "afb49990604442dfc8c6ce90b51356f7";
     private final String kakaoLogoutRedirectUri = "http://localhost:8080/login.html"; // 앱 환경에 맞게 변경
 
 

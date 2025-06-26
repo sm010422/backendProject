@@ -27,6 +27,27 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
 
+
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+
+        // 정적 파일 경로, 필터
+        return path.startsWith("/css/")
+                || path.startsWith("/js/")
+                || path.startsWith("/images/")
+                || path.equals("/")
+                || path.equals("/index.html")
+                || path.endsWith(".html")
+                || path.startsWith("/favicon.ico")
+                || path.startsWith("/api/auth/");
+
+        /**
+         config에서 인증하라고하고 여기서 인증 무시하라고 하면 401 에러남
+         **/
+    }
+
     // HTTP 매 요청마다 호출
     @Override
     protected void doFilterInternal(HttpServletRequest request, //http 요청

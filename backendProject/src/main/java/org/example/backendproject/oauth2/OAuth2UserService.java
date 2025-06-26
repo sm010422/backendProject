@@ -28,6 +28,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class OAuth2UserService extends DefaultOAuth2UserService {
+    //DefaultOAuth2UserService spring Security에서 기본적으로 제공하는  Oauth2 인증 정보를 처리하는 클래스
 
     private final AuthRepository authRepository;   // JWT 저장용 (access, refresh)
     private final UserRepository userRepository;   // 회원 정보 DB 접근
@@ -39,10 +40,10 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     private Long jwtRefreshTokenExpirationTime;
 
 
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
+        //소셜 로그인 성공 시 사용자 정보를 구글이나 카카오에서 받아서 처리하는 메서드
 
         // 기본 OAuth2User 정보 가져오기 (email, name 등)
         OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -75,7 +76,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             email = null;
             username = null;
             userid = null;
-
         }
 
         System.out.println(provider+" 로그인 확인 userid = "+userid);
@@ -90,7 +90,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                     newUser.setUserid(userid);
                     newUser.setPassword("");    // 소셜 로그인은 비밀번호 없음
                     newUser.setRole(Role.ROLE_USER);     // 기본 권한 설정
-
 
                     // 프로필 엔티티 생성 및 양방향 관계 설정
                     UserProfile profile = new UserProfile();
@@ -133,7 +132,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             authRepository.save(auth); // 반드시 저장!
             user.setAuth(auth); // (option) 연관관계 유지
         } else {
-            Auth auth = new Auth(user,"Bearer ",accessToken,refreshToken);
+            Auth auth = new Auth(user,refreshToken,accessToken,"Bearer ");
             authRepository.save(auth);
             user.setAuth(auth);
         }

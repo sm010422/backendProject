@@ -70,6 +70,9 @@ public class AuthService {
         User user = userRepository.findByUserid(loginRequestDTO.getUserid())
                 .orElseThrow(()->new RuntimeException("해당 유저를 찾을 수 없습니다."));
 
+
+
+
         //입력한 비밀번호가 암호화된 비밀번호와 일치하는지 확인
         if (!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())){
             throw new BadCredentialsException("비밀번호가 일치 하지 않습니다.");

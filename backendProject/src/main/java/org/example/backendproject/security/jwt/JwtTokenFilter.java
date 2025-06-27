@@ -70,7 +70,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             String url = request.getRequestURI().toString();
             String method = request.getMethod(); // "GET, POST, PUT"
-//            System.out.println("현재 들어온 HTTP 요청 = "+url);
 //
             log.info("현재 들어온 HTTP 요청 = {}",url);
             log.info("✅ 토큰 인증 성공: {}", accessToken);

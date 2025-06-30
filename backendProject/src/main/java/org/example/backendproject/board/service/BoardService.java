@@ -1,11 +1,11 @@
 package org.example.backendproject.board.service;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backendproject.board.dto.BoardDTO;
+import org.example.backendproject.board.elasticsearch.dto.BoardEsDocument;
+import org.example.backendproject.board.elasticsearch.service.BoardEsService;
 import org.example.backendproject.board.entity.Board;
 import org.example.backendproject.board.repository.BatchRepository;
 import org.example.backendproject.board.repository.BoardRepository;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,13 +29,13 @@ public class BoardService {
     private final BatchRepository batchRepository;
     private final EntityManager  em;
 
+    //엘라스틱 서치 Service
+    private final BoardEsService boardEsService;
 
     /** 글 등록 **/
     @Transactional
     public BoardDTO createBoard(BoardDTO boardDTO) {
 
-        long start = System.currentTimeMillis();
-        System.out.println("글 작성 메서드 시작");
 
         // userId(PK)를 이용해서 User 조회
         if (boardDTO.getUser_id() == null)
@@ -54,9 +53,20 @@ public class BoardService {
         // 연관관계 매핑!
         board.setUser(user);
         Board saved = boardRepository.save(board);
+        //mysql 저장 완료
 
-        long end = System.currentTimeMillis();
-        System.out.println("글 작성 완료 시간 = " + (end-start));
+        //엘라스틱서치에 저장 시작
+        BoardEsDocument doc =  BoardEsDocument.builder()
+                .id(String.valueOf(board.getId()))
+                .title(board.getTitle())
+                .content(board.getContent())
+                .userId(board.getUser().getId())
+                .username(board.getUser().getUserProfile().getUsername())
+                .created_date(String.valueOf(board.getCreated_date()))
+                .updated_date(String.valueOf(board.getUpdated_date()))
+                .build();
+        boardEsService.save(doc);
+
 
         return toDTO(saved);
     }
@@ -74,17 +84,24 @@ public class BoardService {
     @Transactional
     public BoardDTO updateBoard(Long boardId, BoardDTO dto) {
 
-        long start = System.currentTimeMillis();
-        System.out.println("글 수정 메서드 시작");
-
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음: " + boardId));
         board.setTitle(dto.getTitle());
         board.setContent(dto.getContent());
         boardRepository.save(board);
 
-        long end = System.currentTimeMillis();
-        System.out.println("글 수정 완료 시간 = " + (end-start));
+        //엘라스틱서치에 데이터 수정
+        BoardEsDocument doc =  BoardEsDocument.builder()
+                .id(String.valueOf(board.getId()))
+                .title(board.getTitle())
+                .content(board.getContent())
+                .userId(board.getUser().getId())
+                .username(board.getUser().getUserProfile().getUsername())
+                .created_date(String.valueOf(board.getCreated_date()))
+                .updated_date(String.valueOf(board.getUpdated_date()))
+                .build();
+        boardEsService.save(doc);
+
 
         return toDTO(board);
     }
@@ -101,8 +118,11 @@ public class BoardService {
 
         if (!boardRepository.existsById(boardId))
             throw new IllegalArgumentException("게시글 없음: " + boardId);
-
+        //mysql 삭제
         boardRepository.deleteById(boardId);
+
+        //엘라스팃서치 삭제
+        boardEsService.deleteById(String.valueOf(boardId));
     }
     
 

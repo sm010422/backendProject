@@ -7,8 +7,6 @@
             value="logs"
     />
 
-
-
     <!-- 파일 로그 출력 패턴: 색상 X (ELK 연동용) -->
     <property
             name="FILE_PATTERN"
@@ -26,7 +24,9 @@
     <!-- ==========================
          파일 로그 설정 (ELK 연동용)
          ========================== -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">  <!-- RollingFileAppender: 로그를 파일로 남김, 일자별로 파일 자동 분할 -->
+    <appender
+            name="FILE"
+            class="ch.qos.logback.core.rolling.RollingFileAppender">  <!-- RollingFileAppender: 로그를 파일로 남김, 일자별로 파일 자동 분할 -->
         <file>${LOG_PATH}/app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/app-%d{yyyy-MM-dd}.log</fileNamePattern>

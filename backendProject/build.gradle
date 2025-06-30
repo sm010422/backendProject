@@ -44,8 +44,17 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-
+    // OAuth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
   //  testImplementation 'com.h2database:h2'
+
+
+    //Spring Boot Actuator   매트릭/모니터링
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    //프로메테우스
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    //swagger api
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 }
 
 tasks.named('test') {

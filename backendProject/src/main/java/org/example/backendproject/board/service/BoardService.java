@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -182,6 +183,23 @@ public class BoardService {
 
             // 1. MySQL로 INSERT
             batchRepository.batchInsert(batchList);
+
+            // 2. Mysql에 insert한 데이터를 다시 조회
+            List<BoardDTO> saveBoards = batchRepository.findByBatchKey(batchKey);
+
+            // 3.엘라스틱서치용으로변환
+            List<BoardEsDocument> documents = saveBoards.stream()
+                    .map(BoardEsDocument::from) //DTO -> 엘라스틱서치용dto로 변환
+                    .toList();
+
+            try {
+                // 4. 엘라스틱서치 bulk 인덱싱
+                boardEsService.bulkIndexInsert(documents);
+            }
+            catch (IOException e){
+                log.error("[BOARD][BATCH] ElasticSearch 벌크 인덱싱 실패:{}",e.getMessage(),e);
+            }
+
 
         }
 

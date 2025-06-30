@@ -5,8 +5,11 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.PrefixQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.bulk.BulkResponseItem;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -109,6 +112,7 @@ public class BoardEsService {
             // PageImpl 객체를 사용해서 Spring에서 사용할 수 있는 page 객체로 변환
             return new PageImpl<>(content, PageRequest.of(page, size), total);
 
+
         }
         catch (IOException e){
             log.error("검색 오류 ",e);
@@ -116,6 +120,52 @@ public class BoardEsService {
         }
 
     }
+
+
+    //문서 리스트를 받아서 엘라스틱서치에 bulk 색인하는 메서드
+    public void bulkIndexInsert(List<BoardEsDocument> documents) throws IOException {
+
+        //한 번에 처리할 묶음(batch) 크기를 설정
+        int batchSize = 1000;
+
+        for (int i = 0; i < documents.size(); i+=batchSize) {
+            //현재 batch 의 끝 인덱스를 구함
+            int end = Math.min(i + batchSize, documents.size());
+            //현재 batch  단위의 문서 리스트를 잘라냅니다.
+            List<BoardEsDocument> batch = documents.subList(i, end);
+            //엘라스틱서치의 bulk 요청을 담을 빌더 생성
+            BulkRequest.Builder br = new BulkRequest.Builder();
+            //각 문서를 bulk 요청 안에 하나씩 담음
+            for (BoardEsDocument document : batch) {
+                br.operations(op->op    //operations()로 하나하나 문서를 담음
+                        .index(idx->idx     //인덱스에 문서를 저장하는 작업
+                                .index("board-index")  //인덱스명
+                                .id(String.valueOf(document.getId())) //수동으로 Id 지정
+                                .document(document)         //실제 저장할 문서 객체
+                        )
+                );
+            }
+            //bulk 요청 실행 : batch 단위로 엘라스틱서치에 색인 수행
+            BulkResponse response = client.bulk(br.build());
+            //벌크 작업 중 에러가 있는 경우 로그 출력
+            if (response.errors()){
+                for (BulkResponseItem item : response.items()){
+                    if (item.error()!=null){
+                        //실패한 문서의 ID와 에러 내용을 출력
+                        log.error("엘라스틱서치 벌크 색인 작업 중 오류 실패 ID :{}, 오류 : {}",item.id(),item.error());
+                    }
+                }
+            }
+
+
+
+
+        }
+
+
+
+    }
+
 
 
 

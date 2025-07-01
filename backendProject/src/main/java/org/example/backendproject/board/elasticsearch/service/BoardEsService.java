@@ -1,10 +1,7 @@
 package org.example.backendproject.board.elasticsearch.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.PrefixQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
@@ -66,10 +63,8 @@ public class BoardEsService {
                 // 이 쿼리 안에서 여러개의 조건을 나열
                 //예를 들어서 "백앤드"라는 키워드가 들어왔을 때 이 "백앤드" 키워드를 어떻게 분석해서 데이터를 보여줄 것인가를 작성
                 query = BoolQuery.of(b ->{
-
                     // PrefixQuery는 해당 필드가 특정 단어로 시작하는지 검사하는 쿼리
                     // MatchQuery 는 해당 단어가 포함되어 있는지 검사하는 쿼리
-
                     /**
                          must: 모두 일치해야 함 (AND)
                          should: 하나라도 일치하면 됨 (OR)
@@ -77,15 +72,29 @@ public class BoardEsService {
                          filter : must와 같지만 점수 계산 안함 (속도가 빠름)
                      **/
 
+                    // PrefixQuery 는 해당 필드가 특정 단어로 시작하는지  검사하는 쿼리
+                    // MatchQuery 는 해당 단어가 포함되어 있는지 검사하는 쿼리
+
+                    //접두어 글자 검색
                     b.should(PrefixQuery.of(p->p.field("title").value(keyword))._toQuery());
                     b.should(PrefixQuery.of(p->p.field("content").value(keyword))._toQuery());
+
+                    //초성 검색
+                    b.should(PrefixQuery.of(p->p.field("title.chosung").value(keyword))._toQuery());
+                    b.should(PrefixQuery.of(p->p.field("content.chosung").value(keyword))._toQuery());
+
+                    //중간 글자 검색 (match만 가능)
+                    b.should(MatchQuery.of(m -> m.field("title.ngram").query(keyword))._toQuery());
+                    b.should(MatchQuery.of(m -> m.field("content.ngram").query(keyword))._toQuery());
+
+
+
 
 
                     return b;
 
                 })._toQuery();
             }
-
             // SearchRequest 는 엘라스틱서치에서 검색을 하기 위한 검색요청 객체
             //  인덱스명, 페이징 정보, 쿼리를 포함한 검색 요청
             SearchRequest request = SearchRequest.of(s->s

@@ -37,11 +37,9 @@ public class BoardService {
     @Transactional
     public BoardDTO createBoard(BoardDTO boardDTO) {
 
-
         // userId(PK)를 이용해서 User 조회
         if (boardDTO.getUser_id() == null)
             throw new IllegalArgumentException("userId(PK)가 필요합니다!");
-
         // 연관관계 매핑!
         // 작성자 User 엔티티 조회 (userId 필요)
         User user = userRepository.findById(boardDTO.getUser_id())

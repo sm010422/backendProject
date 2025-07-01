@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backendproject.board.dto.BoardDTO;
 import org.example.backendproject.board.elasticsearch.dto.BoardEsDocument;
+import org.example.backendproject.board.elasticsearch.repository.BoardEsRepository;
 import org.example.backendproject.board.elasticsearch.service.BoardEsService;
 import org.example.backendproject.board.entity.Board;
 import org.example.backendproject.board.repository.BatchRepository;
@@ -32,6 +33,7 @@ public class BoardService {
 
     //엘라스틱 서치 Service
     private final BoardEsService boardEsService;
+    private final BoardEsRepository boardEsRepository;
 
     /** 글 등록 **/
     @Transactional
@@ -72,10 +74,22 @@ public class BoardService {
 
 
     /** 게시글 상세 조회 **/
-    @Transactional(readOnly = true)
+    @Transactional
     public BoardDTO getBoardDetail(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음: " + boardId));
+
+
+        //mysql 조회수 증가
+        board.setViewCount(board.getViewCount()+1);
+
+        //엘라스틱서치 조회수 증가
+        BoardEsDocument esDocument = boardEsRepository.findById(String.valueOf(boardId))
+                .orElseThrow(()->new IllegalArgumentException("ES에 게시글 없음 : "+boardId));
+        esDocument.setViewCount(board.getViewCount());
+        boardEsService.save(esDocument);
+
+
         return toDTO(board);
     }
 
@@ -150,6 +164,7 @@ public class BoardService {
 
         dto.setCreated_date(board.getCreated_date());
         dto.setUpdated_date(board.getUpdated_date());
+        dto.setViewCount(board.getViewCount());
         return dto;
     }
 

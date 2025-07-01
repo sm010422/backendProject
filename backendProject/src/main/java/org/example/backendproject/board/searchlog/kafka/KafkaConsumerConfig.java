@@ -2,6 +2,7 @@ package org.example.backendproject.board.searchlog.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+
 import org.example.backendproject.board.searchlog.dto.SearchLogMessage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

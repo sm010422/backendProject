@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SearchLogMessage {
 
-    //kafka로 주고받느느 메세지 포멧(DTO)
+    //kafka로 주고받는 메세지 포멧(DTO)
 
     private String keyword;     //검색한 키워드
     private String userId;      //검색한 유저Id

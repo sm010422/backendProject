@@ -11,7 +11,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Document(indexName = "search-log-index")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor@Builder
+@AllArgsConstructor
+@Builder
 public class SearchLogDocument {
 
     //엘라스틱 서치에 저장되는 검색 데이터

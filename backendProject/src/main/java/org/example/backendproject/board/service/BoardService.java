@@ -86,6 +86,7 @@ public class BoardService {
         //엘라스틱서치 조회수 증가
         BoardEsDocument esDocument = boardEsRepository.findById(String.valueOf(boardId))
                 .orElseThrow(()->new IllegalArgumentException("ES에 게시글 없음 : "+boardId));
+
         esDocument.setViewCount(board.getViewCount());
         boardEsService.save(esDocument);
 

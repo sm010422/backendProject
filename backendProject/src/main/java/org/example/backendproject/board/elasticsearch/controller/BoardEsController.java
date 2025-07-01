@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,19 +36,23 @@ public class BoardEsController {
         //검색어 정보 카프카 전송
         String userId = "1";
         String searchedAt = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+        System.out.println("현재 시간 ----------- "+searchedAt);
+        System.out.println("현재 시간 ----------- "+searchedAt);
+        System.out.println("현재 시간 ----------- "+searchedAt);
+        System.out.println("현재 시간 ----------- "+searchedAt);
 
         SearchLogMessage message = new SearchLogMessage(keyword,userId,searchedAt);
         kafkaTemplate.send("search-log",message);  //search-log 토픽으로 메세지 전달
 
-
-
         return ResponseEntity.ok(boardEsService.search(keyword, page, size));
     }
 
-
-
-
-
+    //localhost:8080/boards/top-keywords
+    @GetMapping("/top-keywords")
+    public ResponseEntity<List<String>> getTopKeyWord(){
+        List<String> keywords= boardEsService.getTopSearchKeyword();
+        return ResponseEntity.ok(keywords);
+    }
 
 
 
